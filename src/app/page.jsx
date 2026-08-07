@@ -15,7 +15,16 @@ export default function Home() {
     if (form.checkValidity()) {
       setIsSubmitting(true);
 
+      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Download PDF
+      const link = document.createElement("a");
+      link.href = "/assets/ThinkSystem Neptune Enterprise Solutions Guide.pdf"; // Place your PDF in public/pdf/
+      link.download = "ThinkSystem Neptune Enterprise Solutions Guide.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       setShowThankYou(true);
       form.reset();
@@ -518,7 +527,7 @@ export default function Home() {
                   alt="Intel"
                   width={80}
                   height={28}
-                  className="w-20 h-auto"
+                  className="h-auto w-[80px]"
                 />
               </div>
               <div className="flex flex-col items-center">
@@ -531,7 +540,7 @@ export default function Home() {
                     alt="Lenovo"
                     width={80}
                     height={28}
-                    className="w-20 h-auto"
+                    className="h-auto w-[80px]"
                   />
                 </div>
               </div>
