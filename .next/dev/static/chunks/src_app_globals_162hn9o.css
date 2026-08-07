@@ -402,14 +402,6 @@
     height: calc(var(--spacing) * 10);
   }
 
-  .h-20 {
-    height: calc(var(--spacing) * 20);
-  }
-
-  .h-\[300px\] {
-    height: 300px;
-  }
-
   .h-\[400px\] {
     height: 400px;
   }
@@ -428,10 +420,6 @@
 
   .w-20 {
     width: calc(var(--spacing) * 20);
-  }
-
-  .w-auto {
-    width: auto;
   }
 
   .w-full {
@@ -581,10 +569,6 @@
 
   .bg-white {
     background-color: var(--color-white);
-  }
-
-  .object-contain {
-    object-fit: contain;
   }
 
   .object-cover {
@@ -837,10 +821,6 @@
 
     .lg\:col-span-7 {
       grid-column: span 7 / span 7;
-    }
-
-    .lg\:h-\[350px\] {
-      height: 350px;
     }
 
     .lg\:grid-cols-12 {
