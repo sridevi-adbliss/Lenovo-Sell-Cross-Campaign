@@ -134,10 +134,10 @@ export default function Home() {
               </p>
               <Image
                 src="/images/intel.png"
-                alt="Intel"
+                alt="Intel®"
                 width={60}
-                height={28}
-                style={{ width: "auto", height: "auto" }}
+                height={60}
+                style={{ width: "auto", height: "60px" }}
                 className="object-contain my-1"
               />
               <p className="text-black text-[10px] sm:text-[12px] font-medium text-center md:text-right">
@@ -639,44 +639,6 @@ export default function Home() {
       />
 
       {/* ================= FOOTER ================= */}
-      {/* <footer className="bg-black text-white py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-sm text-gray-300 space-y-2 text-center md:text-left">
-            <p>© 2026 Lenovo. All rights reserved.</p>
-            <p>
-              © 2026 AdBliss Digital Media LLP, Bangalore, Karnataka, India.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center md:items-end">
-            <div className="flex items-center gap-4">
-              <div className="px-5 py-2 rounded">
-                <Image
-                  src="/Images/intel.png"
-                  alt="Intel"
-                  width={80}
-                  height={28}
-                  className="h-auto w-[80px]"
-                />
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-sm uppercase tracking-wider text-gray-400 mb-2">
-                  Powered by
-                </span>
-                <div className="bg-[#E2231A] px-5 py-2 rounded">
-                  <Image
-                    src="/Images/lenovo_tag.png"
-                    alt="Lenovo"
-                    width={80}
-                    height={28}
-                    className="h-auto w-[80px]"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer> */}
       <footer className="bg-black text-white py-6">
         <div className="max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-44">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -698,8 +660,8 @@ export default function Home() {
               src="/images/lenovo_tag.png"
               alt="Lenovo"
               width={120}
-              height={38}
-              style={{ width: "auto", height: "auto" }}
+              height={60}
+              style={{ width: "auto", height: "60px" }}
               className="object-contain"
             />
 
@@ -710,10 +672,10 @@ export default function Home() {
               </p>
               <Image
                 src="/images/intel.png"
-                alt="Intel"
-                width={55}
-                height={25}
-                style={{ width: "auto", height: "auto" }}
+                alt="Intel®"
+                width={60}
+                height={60}
+                style={{ width: "auto", height: "60px" }}
                 className="object-contain my-1"
               />
               <p className="text-[8px] sm:text-[9px] text-gray-300 text-center sm:text-right">
