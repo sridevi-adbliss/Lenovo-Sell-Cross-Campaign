@@ -18,31 +18,75 @@ var _s = __turbopack_context__.k.signature();
 ;
 function Home() {
     _s();
+    const formRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [showThankYou, setShowThankYou] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [isSubmitting, setIsSubmitting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const formRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const [submitError, setSubmitError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const handleSubmit = async (e)=>{
         e.preventDefault();
+        setSubmitError(null);
         const form = e.target;
-        if (form.checkValidity()) {
-            setIsSubmitting(true);
-            // Simulate API call
-            await new Promise((resolve)=>setTimeout(resolve, 1500));
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        setIsSubmitting(true);
+        const formData = new FormData(form);
+        const data = {
+            firstName: formData.get("firstName"),
+            lastName: formData.get("lastName"),
+            email: formData.get("email"),
+            phone: formData.get("phone"),
+            company: formData.get("company"),
+            industry: formData.get("industry"),
+            jobLevel: formData.get("jobLevel"),
+            jobTitle: formData.get("jobTitle"),
+            city: formData.get("city"),
+            decisionMaking: formData.get("decisionMaking"),
+            timelineEvaluation: formData.get("timelineEvaluation"),
+            aiServerRequirement: formData.get("aiServerRequirement"),
+            budgetAllocation: formData.get("budgetAllocation"),
+            consent1: formData.get("consent1") === "on",
+            consent2: formData.get("consent2") === "on"
+        };
+        try {
+            const response = await fetch("/api/submit-form", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            console.log("result : ", result);
+            if (!response.ok) {
+                if (result.errors) {
+                    const errorMessages = result.errors.map((e)=>e.message).join(", ");
+                    setSubmitError(errorMessages);
+                } else {
+                    setSubmitError(result.message || "Failed to submit form. Please try again.");
+                }
+                return;
+            }
             // Download PDF
             const link = document.createElement("a");
-            link.href = "/assets/ThinkSystem Neptune Enterprise Solutions Guide.pdf"; // Place your PDF in public/pdf/
+            link.href = "/assets/ThinkSystem Neptune Enterprise Solutions Guide.pdf";
             link.download = "ThinkSystem Neptune Enterprise Solutions Guide.pdf";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            setShowThankYou(true);
+            // Reset form
             form.reset();
-            setIsSubmitting(false);
+            // Show Thank You message
+            setShowThankYou(true);
             setTimeout(()=>{
                 setShowThankYou(false);
             }, 5000);
-        } else {
-            form.reportValidity();
+        } catch (error) {
+            console.error("Network error:", error);
+            setSubmitError("Network error. Please check your connection and try again.");
+        } finally{
+            setIsSubmitting(false);
         }
     };
     const handleInvalid = (e)=>{
@@ -60,21 +104,80 @@ function Home() {
                     className: "jsx-81b11a94b78004a5" + " " + "max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 lg:py-8",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "jsx-81b11a94b78004a5" + " " + "mb-4",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                src: "/Images/lenovo_tag.png",
-                                alt: "Lenovo",
-                                width: 120,
-                                height: 40,
-                                className: "w-20 md:w-24 h-auto"
-                            }, void 0, false, {
-                                fileName: "[project]/src/app/page.jsx",
-                                lineNumber: 56,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
+                            className: "jsx-81b11a94b78004a5" + " " + "flex items-center justify-between mb-6",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "jsx-81b11a94b78004a5",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                        src: "/Images/lenovo_tag.png",
+                                        alt: "Lenovo",
+                                        width: 160,
+                                        height: 55,
+                                        className: "w-28 md:w-36 h-auto"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/page.jsx",
+                                        lineNumber: 117,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/page.jsx",
+                                    lineNumber: 116,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "jsx-81b11a94b78004a5" + " " + "flex flex-col items-end montserrat-font",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "jsx-81b11a94b78004a5" + " " + "text-black text-[11px] sm:text-[12px] uppercase tracking-wider font-medium",
+                                            children: "Powered by"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/page.jsx",
+                                            lineNumber: 128,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                            src: "/images/intel.png",
+                                            alt: "Intel",
+                                            width: 60,
+                                            height: 28,
+                                            style: {
+                                                width: "auto",
+                                                height: "auto"
+                                            },
+                                            className: "object-contain my-1"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/page.jsx",
+                                            lineNumber: 131,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "jsx-81b11a94b78004a5" + " " + "text-black text-[10px] sm:text-[12px] font-medium text-center md:text-right",
+                                            children: [
+                                                "That's the power of Lenovo with Intel inside",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("sup", {
+                                                    className: "jsx-81b11a94b78004a5",
+                                                    children: "®"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/page.jsx",
+                                                    lineNumber: 140,
+                                                    columnNumber: 61
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/page.jsx",
+                                            lineNumber: 139,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.jsx",
+                                    lineNumber: 127,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/src/app/page.jsx",
-                            lineNumber: 55,
+                            lineNumber: 114,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -82,7 +185,7 @@ function Home() {
                             children: "Partner with Lenovo for more efficient hybrid AI"
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.jsx",
-                            lineNumber: 66,
+                            lineNumber: 146,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -98,28 +201,28 @@ function Home() {
                                     className: "w-full h-full object-cover object-top"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.jsx",
-                                    lineNumber: 73,
+                                    lineNumber: 153,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.jsx",
-                                lineNumber: 72,
+                                lineNumber: 152,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.jsx",
-                            lineNumber: 71,
+                            lineNumber: 151,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/page.jsx",
-                    lineNumber: 53,
+                    lineNumber: 112,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.jsx",
-                lineNumber: 52,
+                lineNumber: 111,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -140,7 +243,7 @@ function Home() {
                                         children: "No matter where you are in your hybrid AI journey, Lenovo and Intel® can help you get there faster with deep expertise, market-leading server solutions, and expert services."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 96,
+                                        lineNumber: 176,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -156,13 +259,13 @@ function Home() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/page.jsx",
-                                                lineNumber: 106,
+                                                lineNumber: 186,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 102,
+                                        lineNumber: 182,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -170,7 +273,7 @@ function Home() {
                                         children: "Pay as you go with Lenovo TruScale and experience scalability in ways that traditional procurement methods can't match. TruScale's end-to-end services include initial consultation, analysis, and configuration through ongoing assessment, maintenance services, and remote monitoring. Pricing structures are simple and include all associated services in one monthly bill."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 112,
+                                        lineNumber: 192,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -186,13 +289,13 @@ function Home() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/page.jsx",
-                                                lineNumber: 126,
+                                                lineNumber: 206,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 122,
+                                        lineNumber: 202,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -200,18 +303,18 @@ function Home() {
                                         children: "Find out how much you can reduce your total cost of ownership and experience the full benefits of hybrid AI by partnering with Lenovo and Intel®."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 132,
+                                        lineNumber: 212,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.jsx",
-                                lineNumber: 95,
+                                lineNumber: 175,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.jsx",
-                            lineNumber: 94,
+                            lineNumber: 174,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -224,12 +327,12 @@ function Home() {
                                         children: "Fill out the form below to download exclusive whitepaper on 'ThinkSystem Neptune Enterprise Infographics'."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 141,
+                                        lineNumber: 221,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.jsx",
-                                    lineNumber: 140,
+                                    lineNumber: 220,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -251,7 +354,7 @@ function Home() {
                                                                 children: "First Name*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 158,
+                                                                lineNumber: 238,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -263,13 +366,13 @@ function Home() {
                                                                 className: "jsx-81b11a94b78004a5" + " " + "w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 161,
+                                                                lineNumber: 241,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 157,
+                                                        lineNumber: 237,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -280,7 +383,7 @@ function Home() {
                                                                 children: "Last Name*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 173,
+                                                                lineNumber: 253,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -292,13 +395,13 @@ function Home() {
                                                                 className: "jsx-81b11a94b78004a5" + " " + "w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 176,
+                                                                lineNumber: 256,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 172,
+                                                        lineNumber: 252,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -309,7 +412,7 @@ function Home() {
                                                                 children: "Business Email*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 188,
+                                                                lineNumber: 268,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -321,13 +424,13 @@ function Home() {
                                                                 className: "jsx-81b11a94b78004a5" + " " + "w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 191,
+                                                                lineNumber: 271,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 187,
+                                                        lineNumber: 267,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -338,7 +441,7 @@ function Home() {
                                                                 children: "Business Phone*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 203,
+                                                                lineNumber: 283,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -350,13 +453,13 @@ function Home() {
                                                                 className: "jsx-81b11a94b78004a5" + " " + "w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 206,
+                                                                lineNumber: 286,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 202,
+                                                        lineNumber: 282,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -367,7 +470,7 @@ function Home() {
                                                                 children: "Company*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 218,
+                                                                lineNumber: 298,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -379,13 +482,13 @@ function Home() {
                                                                 className: "jsx-81b11a94b78004a5" + " " + "w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 221,
+                                                                lineNumber: 301,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 217,
+                                                        lineNumber: 297,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -396,7 +499,7 @@ function Home() {
                                                                 children: "Industry*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 233,
+                                                                lineNumber: 313,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -413,7 +516,7 @@ function Home() {
                                                                         children: "Select Industry"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 244,
+                                                                        lineNumber: 324,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -422,7 +525,7 @@ function Home() {
                                                                         children: "Technology"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 245,
+                                                                        lineNumber: 325,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -431,7 +534,7 @@ function Home() {
                                                                         children: "Manufacturing"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 246,
+                                                                        lineNumber: 326,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -440,7 +543,7 @@ function Home() {
                                                                         children: "Healthcare"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 247,
+                                                                        lineNumber: 327,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -449,7 +552,7 @@ function Home() {
                                                                         children: "Finance"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 248,
+                                                                        lineNumber: 328,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -458,7 +561,7 @@ function Home() {
                                                                         children: "Education"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 249,
+                                                                        lineNumber: 329,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -467,19 +570,19 @@ function Home() {
                                                                         children: "Government"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 250,
+                                                                        lineNumber: 330,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 236,
+                                                                lineNumber: 316,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 232,
+                                                        lineNumber: 312,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -490,7 +593,7 @@ function Home() {
                                                                 children: "Job Level*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 256,
+                                                                lineNumber: 336,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -502,13 +605,13 @@ function Home() {
                                                                 className: "jsx-81b11a94b78004a5" + " " + "w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 259,
+                                                                lineNumber: 339,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 255,
+                                                        lineNumber: 335,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -519,7 +622,7 @@ function Home() {
                                                                 children: "Job Title*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 271,
+                                                                lineNumber: 351,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -531,13 +634,13 @@ function Home() {
                                                                 className: "jsx-81b11a94b78004a5" + " " + "w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 274,
+                                                                lineNumber: 354,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 270,
+                                                        lineNumber: 350,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -548,7 +651,7 @@ function Home() {
                                                                 children: "City*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 286,
+                                                                lineNumber: 366,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -565,7 +668,7 @@ function Home() {
                                                                         children: "Select City"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 297,
+                                                                        lineNumber: 377,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -574,7 +677,7 @@ function Home() {
                                                                         children: "Bangalore"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 298,
+                                                                        lineNumber: 378,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -583,7 +686,7 @@ function Home() {
                                                                         children: "Hyderabad"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 299,
+                                                                        lineNumber: 379,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -592,7 +695,7 @@ function Home() {
                                                                         children: "Mumbai"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 300,
+                                                                        lineNumber: 380,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -601,7 +704,7 @@ function Home() {
                                                                         children: "Delhi"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 301,
+                                                                        lineNumber: 381,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -610,19 +713,19 @@ function Home() {
                                                                         children: "Chennai"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 302,
+                                                                        lineNumber: 382,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 289,
+                                                                lineNumber: 369,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 285,
+                                                        lineNumber: 365,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -633,7 +736,7 @@ function Home() {
                                                                 children: "Are you directly involved in decision-making for server, infrastructure, or AI investment projects?*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 308,
+                                                                lineNumber: 388,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -650,7 +753,7 @@ function Home() {
                                                                         children: "Select an option"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 320,
+                                                                        lineNumber: 400,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -659,7 +762,7 @@ function Home() {
                                                                         children: "Yes"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 321,
+                                                                        lineNumber: 401,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -668,19 +771,19 @@ function Home() {
                                                                         children: "No"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 322,
+                                                                        lineNumber: 402,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 312,
+                                                                lineNumber: 392,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 307,
+                                                        lineNumber: 387,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -691,7 +794,7 @@ function Home() {
                                                                 children: "What is your expected timeline for evaluating or implementing new infrastructure solutions?*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 328,
+                                                                lineNumber: 408,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -708,7 +811,7 @@ function Home() {
                                                                         children: "Select Timeline"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 340,
+                                                                        lineNumber: 420,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -717,7 +820,7 @@ function Home() {
                                                                         children: "0 to 3 months"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 341,
+                                                                        lineNumber: 421,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -726,7 +829,7 @@ function Home() {
                                                                         children: "3 to 6 months"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 342,
+                                                                        lineNumber: 422,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -735,7 +838,7 @@ function Home() {
                                                                         children: "6 to 9 months"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 343,
+                                                                        lineNumber: 423,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -744,19 +847,19 @@ function Home() {
                                                                         children: "9 to 12 months"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 344,
+                                                                        lineNumber: 424,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 332,
+                                                                lineNumber: 412,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 327,
+                                                        lineNumber: 407,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -767,7 +870,7 @@ function Home() {
                                                                 children: "Does your organization currently have a requirement to upgrade or deploy new AI-ready servers or infrastructure?*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 350,
+                                                                lineNumber: 430,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -784,7 +887,7 @@ function Home() {
                                                                         children: "Select an option"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 362,
+                                                                        lineNumber: 442,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -793,7 +896,7 @@ function Home() {
                                                                         children: "Yes"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 363,
+                                                                        lineNumber: 443,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -802,19 +905,19 @@ function Home() {
                                                                         children: "No"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 364,
+                                                                        lineNumber: 444,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 354,
+                                                                lineNumber: 434,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 349,
+                                                        lineNumber: 429,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -825,7 +928,7 @@ function Home() {
                                                                 children: "Has your organization allocated a budget for AI-ready infrastructure or data center modernization initiatives?*"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 370,
+                                                                lineNumber: 450,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -842,7 +945,7 @@ function Home() {
                                                                         children: "Select an option"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 382,
+                                                                        lineNumber: 462,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -851,7 +954,7 @@ function Home() {
                                                                         children: "Yes"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 383,
+                                                                        lineNumber: 463,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -860,7 +963,7 @@ function Home() {
                                                                         children: "No"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 384,
+                                                                        lineNumber: 464,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -869,7 +972,7 @@ function Home() {
                                                                         children: "Planned for next fiscal year"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 385,
+                                                                        lineNumber: 465,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -878,19 +981,19 @@ function Home() {
                                                                         children: "Not sure"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/page.jsx",
-                                                                        lineNumber: 388,
+                                                                        lineNumber: 468,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 374,
+                                                                lineNumber: 454,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 369,
+                                                        lineNumber: 449,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -907,7 +1010,7 @@ function Home() {
                                                                     className: "jsx-81b11a94b78004a5" + " " + "mt-1 accent-[#E2231A]"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/page.jsx",
-                                                                    lineNumber: 395,
+                                                                    lineNumber: 475,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -919,24 +1022,24 @@ function Home() {
                                                                             children: " 18 years of age or older."
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/page.jsx",
-                                                                            lineNumber: 409,
+                                                                            lineNumber: 489,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/page.jsx",
-                                                                    lineNumber: 407,
+                                                                    lineNumber: 487,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/page.jsx",
-                                                            lineNumber: 394,
+                                                            lineNumber: 474,
                                                             columnNumber: 21
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 393,
+                                                        lineNumber: 473,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -953,7 +1056,7 @@ function Home() {
                                                                     className: "jsx-81b11a94b78004a5" + " " + "mt-1 accent-[#E2231A]"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/page.jsx",
-                                                                    lineNumber: 417,
+                                                                    lineNumber: 497,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -961,19 +1064,27 @@ function Home() {
                                                                     children: "By submitting this form, you agree to Lenovo Group of Companies and Businestech contacting you for marketing-related communications. You also acknowledge that you have read and understood the applicable privacy policies."
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/page.jsx",
-                                                                    lineNumber: 429,
+                                                                    lineNumber: 509,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/page.jsx",
-                                                            lineNumber: 416,
+                                                            lineNumber: 496,
                                                             columnNumber: 21
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 415,
+                                                        lineNumber: 495,
                                                         columnNumber: 19
+                                                    }, this),
+                                                    submitError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "jsx-81b11a94b78004a5" + " " + "md:col-span-2 bg-red-50 text-red-600 p-3 rounded-md text-sm",
+                                                        children: submitError
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/page.jsx",
+                                                        lineNumber: 520,
+                                                        columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "jsx-81b11a94b78004a5" + " " + "sm:col-span-2 pt-4",
@@ -984,18 +1095,18 @@ function Home() {
                                                             children: isSubmitting ? "Submitting..." : "Submit"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/page.jsx",
-                                                            lineNumber: 441,
+                                                            lineNumber: 527,
                                                             columnNumber: 21
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/page.jsx",
-                                                        lineNumber: 440,
+                                                        lineNumber: 526,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/page.jsx",
-                                                lineNumber: 150,
+                                                lineNumber: 230,
                                                 columnNumber: 17
                                             }, this),
                                             showThankYou && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1018,17 +1129,17 @@ function Home() {
                                                                     className: "jsx-81b11a94b78004a5"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/page.jsx",
-                                                                    lineNumber: 462,
+                                                                    lineNumber: 548,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/page.jsx",
-                                                                lineNumber: 456,
+                                                                lineNumber: 542,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/page.jsx",
-                                                            lineNumber: 455,
+                                                            lineNumber: 541,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1039,7 +1150,7 @@ function Home() {
                                                                     children: "Thank You!"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/page.jsx",
-                                                                    lineNumber: 471,
+                                                                    lineNumber: 557,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1047,52 +1158,52 @@ function Home() {
                                                                     children: "A Lenovo representative will be in contact with you soon."
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/page.jsx",
-                                                                    lineNumber: 474,
+                                                                    lineNumber: 560,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/page.jsx",
-                                                            lineNumber: 470,
+                                                            lineNumber: 556,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/page.jsx",
-                                                    lineNumber: 454,
+                                                    lineNumber: 540,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/page.jsx",
-                                                lineNumber: 453,
+                                                lineNumber: 539,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 149,
+                                        lineNumber: 229,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.jsx",
-                                    lineNumber: 148,
+                                    lineNumber: 228,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/page.jsx",
-                            lineNumber: 139,
+                            lineNumber: 219,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/page.jsx",
-                    lineNumber: 93,
+                    lineNumber: 173,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.jsx",
-                lineNumber: 87,
+                lineNumber: 167,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1107,127 +1218,138 @@ function Home() {
                 className: "w-full h-auto"
             }, void 0, false, {
                 fileName: "[project]/src/app/page.jsx",
-                lineNumber: 504,
+                lineNumber: 590,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
                 className: "jsx-81b11a94b78004a5" + " " + "bg-black text-white py-6",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "jsx-81b11a94b78004a5" + " " + "max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 flex flex-col md:flex-row items-center justify-between gap-6",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "jsx-81b11a94b78004a5" + " " + "text-sm text-gray-300 space-y-2 text-center md:text-left",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    className: "jsx-81b11a94b78004a5",
-                                    children: "© 2026 Lenovo. All rights reserved."
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/page.jsx",
-                                    lineNumber: 516,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    className: "jsx-81b11a94b78004a5",
-                                    children: "© 2026 AdBliss Digital Media LLP, Bangalore, Karnataka, India."
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/page.jsx",
-                                    lineNumber: 517,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/page.jsx",
-                            lineNumber: 515,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "jsx-81b11a94b78004a5" + " " + "flex flex-col items-center md:items-end",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "jsx-81b11a94b78004a5" + " " + "flex items-center gap-4",
+                    className: "jsx-81b11a94b78004a5" + " " + "max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-44",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "jsx-81b11a94b78004a5" + " " + "flex flex-col sm:flex-row items-center justify-between gap-6",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "jsx-81b11a94b78004a5" + " " + "flex flex-col items-center sm:items-start text-center sm:text-left",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "jsx-81b11a94b78004a5" + " " + "px-5 py-2 rounded",
-                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                            src: "/Images/intel.png",
-                                            alt: "Intel",
-                                            width: 80,
-                                            height: 28,
-                                            className: "h-auto w-[80px]"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/page.jsx",
-                                            lineNumber: 525,
-                                            columnNumber: 17
-                                        }, this)
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "jsx-81b11a94b78004a5" + " " + "text-[11px] sm:text-[12px] text-gray-300",
+                                        children: "© 2026 AdBliss Digital Media LLP"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 524,
+                                        lineNumber: 642,
                                         columnNumber: 15
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "jsx-81b11a94b78004a5" + " " + "flex flex-col items-center",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "jsx-81b11a94b78004a5" + " " + "text-sm uppercase tracking-wider text-gray-400 mb-2",
-                                                children: "Powered by"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/page.jsx",
-                                                lineNumber: 534,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "jsx-81b11a94b78004a5" + " " + "bg-[#E2231A] px-5 py-2 rounded",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                                    src: "/Images/lenovo_tag.png",
-                                                    alt: "Lenovo",
-                                                    width: 80,
-                                                    height: 28,
-                                                    className: "h-auto w-[80px]"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/page.jsx",
-                                                    lineNumber: 538,
-                                                    columnNumber: 19
-                                                }, this)
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/page.jsx",
-                                                lineNumber: 537,
-                                                columnNumber: 17
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "jsx-81b11a94b78004a5" + " " + "text-[9px] sm:text-[10px] text-gray-400",
+                                        children: "Bangalore, Karnataka, India"
+                                    }, void 0, false, {
                                         fileName: "[project]/src/app/page.jsx",
-                                        lineNumber: 533,
+                                        lineNumber: 645,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "jsx-81b11a94b78004a5" + " " + "text-[9px] sm:text-[10px] text-gray-400 mt-1",
+                                        children: "© 2026 Lenovo. All rights reserved."
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/page.jsx",
+                                        lineNumber: 648,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.jsx",
-                                lineNumber: 523,
+                                lineNumber: 641,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                src: "/images/lenovo_tag.png",
+                                alt: "Lenovo",
+                                width: 120,
+                                height: 38,
+                                style: {
+                                    width: "auto",
+                                    height: "auto"
+                                },
+                                className: "object-contain"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/page.jsx",
+                                lineNumber: 654,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "jsx-81b11a94b78004a5" + " " + "flex flex-col items-center sm:items-end",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "jsx-81b11a94b78004a5" + " " + "text-[9px] sm:text-[10px] uppercase tracking-wider text-gray-400",
+                                        children: "Powered by"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/page.jsx",
+                                        lineNumber: 665,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                        src: "/images/intel.png",
+                                        alt: "Intel",
+                                        width: 55,
+                                        height: 25,
+                                        style: {
+                                            width: "auto",
+                                            height: "auto"
+                                        },
+                                        className: "object-contain my-1"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/page.jsx",
+                                        lineNumber: 668,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "jsx-81b11a94b78004a5" + " " + "text-[8px] sm:text-[9px] text-gray-300 text-center sm:text-right",
+                                        children: [
+                                            "That's the power of Lenovo with Intel inside",
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("sup", {
+                                                className: "jsx-81b11a94b78004a5",
+                                                children: "®"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/page.jsx",
+                                                lineNumber: 677,
+                                                columnNumber: 61
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/page.jsx",
+                                        lineNumber: 676,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/page.jsx",
+                                lineNumber: 664,
                                 columnNumber: 13
                             }, this)
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/page.jsx",
-                            lineNumber: 522,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/page.jsx",
+                        lineNumber: 639,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
                     fileName: "[project]/src/app/page.jsx",
-                    lineNumber: 514,
+                    lineNumber: 638,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/page.jsx",
-                lineNumber: 513,
+                lineNumber: 637,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/page.jsx",
-        lineNumber: 50,
+        lineNumber: 109,
         columnNumber: 5
     }, this);
 }
-_s(Home, "MhTnd4Pwvp2oTsWNA3HZSpb/U18=");
+_s(Home, "sPnlm25++XR9JkqCZTNXGO5zUEY=");
 _c = Home;
 var _c;
 __turbopack_context__.k.register(_c, "Home");

@@ -2,39 +2,102 @@
 
 import Image from "next/image";
 import { useState, useRef } from "react";
+import indianCities from "../data/cities";
 
 export default function Home() {
+  const formRef = useRef(null);
   const [showThankYou, setShowThankYou] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const formRef = useRef(null);
+  const [submitError, setSubmitError] = useState(null);
+  const [citySearch, setCitySearch] = useState("");
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [selectedCity, setSelectedCity] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitError(null);
+
     const form = e.target;
 
-    if (form.checkValidity()) {
-      setIsSubmitting(true);
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSubmitting(true);
 
+    const formData = new FormData(form);
+
+    const data = {
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      company: formData.get("company"),
+      industry: formData.get("industry"),
+      jobLevel: formData.get("jobLevel"),
+      jobTitle: formData.get("jobTitle"),
+      city: formData.get("city"),
+      decisionMaking: formData.get("decisionMaking"),
+      timelineEvaluation: formData.get("timelineEvaluation"),
+      aiServerRequirement: formData.get("aiServerRequirement"),
+      budgetAllocation: formData.get("budgetAllocation"),
+      consent1: formData.get("consent1") === "on",
+      consent2: formData.get("consent2") === "on",
+    };
+
+    try {
+      const response = await fetch("/api/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log("result : ", result);
+      if (!response.ok) {
+        if (result.errors) {
+          const errorMessages = result.errors.map((e) => e.message).join(", ");
+
+          setSubmitError(errorMessages);
+        } else {
+          setSubmitError(
+            result.message || "Failed to submit form. Please try again.",
+          );
+        }
+
+        return;
+      }
       // Download PDF
       const link = document.createElement("a");
-      link.href = "/assets/ThinkSystem Neptune Enterprise Solutions Guide.pdf"; // Place your PDF in public/pdf/
+
+      link.href = "/assets/ThinkSystem Neptune Enterprise Solutions Guide.pdf";
+
       link.download = "ThinkSystem Neptune Enterprise Solutions Guide.pdf";
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      setShowThankYou(true);
+      // Reset form
       form.reset();
-      setIsSubmitting(false);
+
+      // Show Thank You message
+      setShowThankYou(true);
 
       setTimeout(() => {
         setShowThankYou(false);
       }, 5000);
-    } else {
-      form.reportValidity();
+    } catch (error) {
+      console.error("Network error:", error);
+
+      setSubmitError(
+        "Network error. Please check your connection and try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -51,15 +114,36 @@ export default function Home() {
       {/* ================= HERO ================= */}
       <section className="relative w-full bg-[#EEDDEA] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 lg:py-8">
-          {/* Lenovo Tag */}
-          <div className="mb-4">
-            <Image
-              src="/Images/lenovo_tag.png"
-              alt="Lenovo"
-              width={120}
-              height={40}
-              className="w-20 md:w-24 h-auto"
-            />
+          {/* Top Row - Lenovo Left, Intel Right */}
+          <div className="flex items-center justify-between mb-6">
+            {/* Left - Lenovo Tag */}
+            <div>
+              <Image
+                src="/Images/lenovo_tag.png"
+                alt="Lenovo"
+                width={160}
+                height={55}
+                className="w-28 md:w-36 h-auto"
+              />
+            </div>
+
+            {/* Right - Intel Logo */}
+            <div className="flex flex-col items-end montserrat-font">
+              <p className="text-black text-[11px] sm:text-[12px] uppercase tracking-wider font-medium">
+                Powered by
+              </p>
+              <Image
+                src="/images/intel.png"
+                alt="Intel"
+                width={60}
+                height={28}
+                style={{ width: "auto", height: "auto" }}
+                className="object-contain my-1"
+              />
+              <p className="text-black text-[10px] sm:text-[12px] font-medium text-center md:text-right">
+                That's the power of Lenovo with Intel inside<sup>®</sup>
+              </p>
+            </div>
           </div>
 
           {/* Heading */}
@@ -282,25 +366,64 @@ export default function Home() {
                   </div>
 
                   {/* City */}
-                  <div className="sm:col-span-2">
+                  <div className="sm:col-span-2 relative">
                     <label className="block text-[13px] font-medium text-gray-700 mb-1">
                       City*
                     </label>
-                    <select
-                      name="city"
-                      required
-                      defaultValue=""
-                      className="w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black bg-white focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
+
+                    {/* Hidden input for form submission */}
+                    <input type="hidden" name="city" value={selectedCity} />
+
+                    {/* Search input */}
+                    <input
+                      type="text"
+                      value={citySearch}
+                      placeholder="Search City"
+                      required={!selectedCity}
+                      onChange={(e) => {
+                        setCitySearch(e.target.value);
+                        setSelectedCity("");
+                        setShowCityDropdown(true);
+                      }}
+                      onFocus={() => setShowCityDropdown(true)}
                       onInvalid={handleInvalid}
                       onInput={handleInput}
-                    >
-                      <option value="">Select City</option>
-                      <option value="Bangalore">Bangalore</option>
-                      <option value="Hyderabad">Hyderabad</option>
-                      <option value="Mumbai">Mumbai</option>
-                      <option value="Delhi">Delhi</option>
-                      <option value="Chennai">Chennai</option>
-                    </select>
+                      className="w-full h-10 px-3 border border-gray-300 rounded-md text-sm text-black bg-white focus:outline-none focus:border-[#E2231A] focus:ring-2 focus:ring-[#E2231A]/20 transition"
+                    />
+
+                    {/* Dropdown */}
+                    {showCityDropdown && (
+                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                        {indianCities
+                          .filter((city) =>
+                            city
+                              .toLowerCase()
+                              .includes(citySearch.toLowerCase()),
+                          )
+                          .map((city) => (
+                            <button
+                              key={city}
+                              type="button"
+                              onClick={() => {
+                                setSelectedCity(city);
+                                setCitySearch(city);
+                                setShowCityDropdown(false);
+                              }}
+                              className="w-full text-left px-3 py-2 text-sm text-black hover:bg-gray-100"
+                            >
+                              {city}
+                            </button>
+                          ))}
+
+                        {indianCities.filter((city) =>
+                          city.toLowerCase().includes(citySearch.toLowerCase()),
+                        ).length === 0 && (
+                          <div className="px-3 py-2 text-sm text-gray-500">
+                            No cities found
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Decision Making */}
@@ -436,6 +559,12 @@ export default function Home() {
                     </label>
                   </div>
 
+                  {submitError && (
+                    <div className="md:col-span-2 bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                      {submitError}
+                    </div>
+                  )}
+
                   {/* Submit Button */}
                   <div className="sm:col-span-2 pt-4">
                     <button
@@ -510,7 +639,7 @@ export default function Home() {
       />
 
       {/* ================= FOOTER ================= */}
-      <footer className="bg-black text-white py-6">
+      {/* <footer className="bg-black text-white py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-sm text-gray-300 space-y-2 text-center md:text-left">
             <p>© 2026 Lenovo. All rights reserved.</p>
@@ -544,6 +673,52 @@ export default function Home() {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </footer> */}
+      <footer className="bg-black text-white py-6">
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-44">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            {/* Left - AdBliss */}
+            <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+              <p className="text-[11px] sm:text-[12px] text-gray-300">
+                © 2026 AdBliss Digital Media LLP
+              </p>
+              <p className="text-[9px] sm:text-[10px] text-gray-400">
+                Bangalore, Karnataka, India
+              </p>
+              <p className="text-[9px] sm:text-[10px] text-gray-400 mt-1">
+                © 2026 Lenovo. All rights reserved.
+              </p>
+            </div>
+
+            {/* Center - Lenovo Logo */}
+            <Image
+              src="/images/lenovo_tag.png"
+              alt="Lenovo"
+              width={120}
+              height={38}
+              style={{ width: "auto", height: "auto" }}
+              className="object-contain"
+            />
+
+            {/* Right - Powered by with Intel */}
+            <div className="flex flex-col items-center sm:items-end">
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-gray-400">
+                Powered by
+              </p>
+              <Image
+                src="/images/intel.png"
+                alt="Intel"
+                width={55}
+                height={25}
+                style={{ width: "auto", height: "auto" }}
+                className="object-contain my-1"
+              />
+              <p className="text-[8px] sm:text-[9px] text-gray-300 text-center sm:text-right">
+                That's the power of Lenovo with Intel inside<sup>®</sup>
+              </p>
             </div>
           </div>
         </div>

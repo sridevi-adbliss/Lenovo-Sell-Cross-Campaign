@@ -1,24 +1,34 @@
+/* src/app/globals.css */
 @import "tailwindcss";
 
-* {
-  /* margin: 0;
-  padding: 0; */
-  /* box-sizing: border-box; */
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom theme configuration */
+@theme {
+  /* Colors */
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  
+  /* Font families */
+  --font-family-sans: Arial, Helvetica, sans-serif;
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Reset styles (keep what you need) */
+* {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-/* Optional: You can also set it on specific elements if needed */
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-family-sans);
+}
+
+/* Your custom styles */
+@layer components {
+  .product-card {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
 }
