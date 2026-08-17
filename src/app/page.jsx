@@ -112,60 +112,65 @@ export default function Home() {
   return (
     <main className="bg-[#210022] text-white overflow-x-hidden">
       {/* ================= HERO ================= */}
-      <section className="relative w-full bg-[#EEDDEA] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 lg:py-8">
-          {/* Top Row - Lenovo Left, Intel Right */}
-          <div className="flex items-center justify-between mb-6">
-            {/* Left - Lenovo Tag */}
-            <div>
-              <Image
-                src="/Images/lenovo_tag.png"
-                alt="Lenovo"
-                width={160}
-                height={55}
-                className="w-28 md:w-36 h-auto"
-              />
-            </div>
+     <section className="relative w-full bg-[#EEDDEA] overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 lg:py-8">
 
-            {/* Right - Intel Logo */}
-            <div className="flex flex-col items-end montserrat-font">
-              <p className="text-black text-[11px] sm:text-[12px] uppercase tracking-wider font-medium">
-                Powered by
-              </p>
-              <Image
-                src="/images/intel.png"
-                alt="Intel®"
-                width={60}
-                height={60}
-                style={{ width: "auto", height: "60px" }}
-                className="object-contain my-1"
-              />
-              <p className="text-black text-[10px] sm:text-[12px] font-medium text-center md:text-right">
-                That's the power of Lenovo with Intel inside<sup>®</sup>
-              </p>
-            </div>
-          </div>
+    {/* Top Row - Lenovo Left, Intel Right */}
+    <div className="flex items-center justify-between mb-6">
 
-          {/* Heading */}
-          <h1 className="text-[24px] md:text-[36px] font-bold leading-tight text-left text-[#4D144A] max-w-4xl mb-6">
-            Partner with Lenovo for more efficient hybrid AI
-          </h1>
+      {/* Left - Lenovo */}
+      <Image
+        src="/images/lenovo_tag.png"
+        alt="Lenovo"
+        width={120}
+        height={120}
+        className="w-[160px] h-auto object-contain"
+      />
 
-          {/* Hero Image */}
-          <div className="flex justify-center">
-            <div className="w-full max-w-[1200px] h-[400px] overflow-hidden">
-              <Image
-                src="/Images/hero.png"
-                alt="Hero Image"
-                width={1200}
-                height={300}
-                priority
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
-          </div>
+      {/* Right - Intel */}
+      <div className="flex items-center gap-3">
+        <div className="flex flex-col items-end montserrat-font">
+          <p className="text-black text-[10px] sm:text-[11px] uppercase tracking-wider font-medium">
+            Powered by
+          </p>
+
+          <p className="text-black text-[9px] sm:text-[10px] font-medium text-right">
+            That's the power of Lenovo with Intel inside<sup>®</sup>
+          </p>
         </div>
-      </section>
+
+        <Image
+          src="/images/intel.png"
+          alt="Intel®"
+          width={120}
+          height={60}
+          className="h-[100px] w-auto object-contain"
+        />
+      </div>
+
+    </div>
+
+    {/* Heading */}
+    <h1 className="text-[24px] md:text-[36px] font-bold leading-tight text-left text-[#4D144A] max-w-4xl mb-6">
+      Partner with Lenovo for more efficient hybrid AI
+    </h1>
+
+    {/* Hero Image */}
+    <div className="flex justify-center">
+      <div className="w-full max-w-[1200px] h-[400px] overflow-hidden">
+        <Image
+          src="/Images/hero.png"
+          alt="Hero Image"
+          width={1200}
+          height={300}
+          priority
+          className="w-full h-full object-cover object-top"
+        />
+      </div>
+    </div>
+
+  </div>
+</section>
 
       {/* ================= AI WORK HAS CHANGED ================= */}
       <section
@@ -655,29 +660,30 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Center - Lenovo Logo */}
+            {/* Center - Lenovo Logo - 120px */}
             <Image
               src="/images/lenovo_tag.png"
               alt="Lenovo"
               width={120}
-              height={60}
-              style={{ width: "auto", height: "60px" }}
-              className="object-contain"
+              height={120}
+              className="w-[160px] h-auto object-contain object-center my-1"
             />
 
-            {/* Right - Powered by with Intel */}
+            {/* Right - Powered by Intel - 120px */}
             <div className="flex flex-col items-center sm:items-end">
               <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-gray-400">
                 Powered by
               </p>
+
               <Image
                 src="/images/intel.png"
                 alt="Intel®"
-                width={60}
+                width={120}
                 height={60}
-                style={{ width: "auto", height: "60px" }}
+                style={{ width: "auto", height: "100px" }}
                 className="object-contain my-1"
               />
+
               <p className="text-[8px] sm:text-[9px] text-gray-300 text-center sm:text-right">
                 That's the power of Lenovo with Intel inside<sup>®</sup>
               </p>
